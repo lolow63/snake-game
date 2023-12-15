@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Snake Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="snakeGame.js" defer></script>
+  </head>
+  <body>
+    <div id="container">
+      <div class="scores">
+        <div id="score">000</div>
+        <div id="highScore">000</div>
+      </div>
+      <div id="border-1">
+        <div id="border-2">
+          <div id="board">
+            <img
+              id="splashScreen"
+              src="./img/midResSnake.png"
+              alt="splash screen"
+            />
+            <div class="snake" style="grid-column: 10; grid-row: 10"></div>
+            <div class="snake" style="grid-column: 11; grid-row: 10"></div>
+            <div class="snake" style="grid-column: 11; grid-row: 11"></div>
+            <div class="snake" style="grid-column: 11; grid-row: 12"></div>
+            <div id="food"></div>
+          </div>
+        </div>
+      </div>
+      <h1 id="title">Snake Returns</h1>
+      <p id="start">Press any key to start</p>
+      <p id="tips">Tips: Use the arrow keys</p>
+    </div>
+  </body>
+</html>
