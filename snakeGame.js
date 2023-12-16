@@ -1,6 +1,6 @@
 // Global variables
-let snakeElements = [{ x: 10, y: 10 }, { x: 11, y: 10 }, { x: 12, y: 10 }, { x: 12, y: 9 }];
-let food = [{ x: 3, y: 3 }];
+let snakeElements = [{ x: 10, y: 6 }, { x: 10, y: 5 }, { x: 10, y: 4 }, { x: 10, y: 3 }];
+let foodPosition = { x: 10, y: 15 };
 const board = document.getElementById("board");
 // loop variables
 let animationFrameId;
@@ -8,7 +8,7 @@ let lastTime = 0;
 let intervalInMilliseconds = 1000;
 let count = 0;
 //player's inputs
-let lastKeyPressed;
+let lastKeyPressed = 'ArrowRight';
 
 // Start the game
 const Start = () => {
@@ -28,26 +28,42 @@ function loop(timestamp) {
         count += 1;
         console.log(count);
         console.log('lastKeyPressed:', lastKeyPressed);
-
-        // Run your callback function here
+        // Run your functions here
+        draw();
 
     }
     // Continue the loop
     animationFrameId = requestAnimationFrame(loop);
 }
 
-const Draw = () => {
-    createSnake(snakeElements);
+const draw = () => {
+    updateSnake(snakeElements);
+    updateFood(foodPosition);
 }
 
-const createSnake = (snakeElements) => {
-    snakeElements.forEach(element => {
+const updateSnake = (elements) => {
+    const oldSnake = document.querySelectorAll(".snake");
+    oldSnake.forEach((element) => element.remove());
+
+    elements.forEach(position => {
         let snake = document.createElement("div");
         snake.setAttribute("class", "snake");
-        snake.style.gridArea = `${element.x}/${element.y}`
+        snake.style.gridArea = `${position.x}/${position.y}`
         board.append(snake);
         console.log(snake);
     });
+}
+
+const updateFood = (position) => {
+    const oldFood = document.getElementById("food")
+    if (oldFood) {
+        oldFood.remove();
+    }
+
+    let food = document.createElement("div");
+    food.setAttribute("id", "food");
+    food.style.gridArea = `${position.x}/${position.y}`
+    board.append(food);
 }
 
 //listening for player's input
