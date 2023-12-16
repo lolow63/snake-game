@@ -1,6 +1,6 @@
 // Global variables
-let snakeElements = [{ x: 10, y: 6 }, { x: 10, y: 5 }, { x: 10, y: 4 }, { x: 10, y: 3 }];
-let foodPosition = { x: 10, y: 15 };
+let snakeElements = [{ row: 10, col: 6 }, { row: 10, col: 5 }, { row: 10, col: 4 }, { row: 10, col: 3 }];
+let foodPosition = { row: 10, col: 15 };
 const board = document.getElementById("board");
 // loop variables
 let animationFrameId;
@@ -28,7 +28,6 @@ function loop(timestamp) {
         count += 1;
         console.log(count);
         console.log('lastKeyPressed:', lastKeyPressed);
-        // Run your functions here
         draw();
 
     }
@@ -48,7 +47,7 @@ const updateSnake = (elements) => {
     elements.forEach(position => {
         let snake = document.createElement("div");
         snake.setAttribute("class", "snake");
-        snake.style.gridArea = `${position.x}/${position.y}`
+        snake.style.gridArea = `${position.row}/${position.col}`
         board.append(snake);
         console.log(snake);
     });
@@ -62,7 +61,7 @@ const updateFood = (position) => {
 
     let food = document.createElement("div");
     food.setAttribute("id", "food");
-    food.style.gridArea = `${position.x}/${position.y}`
+    food.style.gridArea = `${position.row}/${position.col}`
     board.append(food);
 }
 
