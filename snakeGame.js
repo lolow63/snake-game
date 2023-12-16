@@ -1,5 +1,5 @@
 // Global variables
-let snakeElements = [{ row: 10, col: 6 }, { row: 10, col: 5 }, { row: 10, col: 4 }, { row: 10, col: 3 }];
+let snakeElements = [{ row: 10, col: 3 }, { row: 10, col: 4 }, { row: 10, col: 5 }, { row: 10, col: 6 }];
 let foodPosition = { row: 10, col: 15 };
 const board = document.getElementById("board");
 // loop variables
@@ -41,6 +41,8 @@ const draw = () => {
 }
 
 const updateSnake = (elements) => {
+    updateSnakePosition(elements);
+
     const oldSnake = document.querySelectorAll(".snake");
     oldSnake.forEach((element) => element.remove());
 
@@ -51,6 +53,32 @@ const updateSnake = (elements) => {
         board.append(snake);
         console.log(snake);
     });
+}
+
+const updateSnakePosition = (elements) => {
+    let head;
+    switch (lastKeyPressed) {
+        case "ArrowDown":
+            head = elements[elements.length - 1]
+            elements.push({ row: head.row + 1, col: head.col })
+            elements.shift();
+            break;
+        case "ArrowUp":
+            head = elements[0]
+            elements.unshift({ row: head.row - 1, col: head.col })
+            elements.pop();
+            break;
+        case "ArrowLeft":
+            head = elements[0]
+            elements.unshift({ row: head.row, col: head.col - 1 })
+            elements.pop();
+            break;
+        case "ArrowRight":
+            head = elements[elements.length - 1]
+            elements.push({ row: head.row, col: head.col + 1 })
+            elements.shift();
+            break;
+    }
 }
 
 const updateFood = (position) => {
