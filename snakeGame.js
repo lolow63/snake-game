@@ -3,6 +3,7 @@ let snakeElements = [{ row: 10, col: 6 }, { row: 10, col: 5 }, { row: 10, col: 4
 let foodPosition = { row: 10, col: 15 };
 let isEaten = false;
 let isWallHit = false;
+let isCellFree = true;
 const board = document.getElementById("board");
 // loop variables
 let animationFrameId;
@@ -33,11 +34,12 @@ const loop = (timestamp) => {
         console.log(count);
         updateSnake(snakeElements);
         checkForCollision(snakeElements, foodPosition);
-        if (isEaten) {
+        if (isEaten || !isCellFree) {
             updateFood(foodPosition);
         };
         // breadcrumbs 
         oldKey = lastKeyPressed;
+        isCellFree = true;
     };
     // Continue the loop
     animationFrameId = requestAnimationFrame(loop);
@@ -66,8 +68,15 @@ const checkForCollision = (player, target) => {
     player[0].row === target.row && player[0].col === target.col
         ? isEaten = true
         : isEaten = false;
+
     const edge = (element) => element.row === 20 || element.col === 20;
     player.some(edge) ? isWallHit = true : isWallHit = false;
+
+    player.forEach((element) => {
+        if (element.row === target.row && element.col === target.col) {
+            isCellFree = false;
+        }
+    })
 };
 const updateFood = (position) => {
     updateFoodPosition(position);
