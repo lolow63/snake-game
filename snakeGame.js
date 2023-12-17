@@ -17,6 +17,8 @@ const Start = () => {
     const splashScreen = document.getElementById("splashScreen");
     splashScreen.style.display = "none";
     document.removeEventListener('keydown', Start);
+    drawSnake(snakeElements);
+    drawFood(foodPosition);
     // Start the loop
     window.requestAnimationFrame(loop);
 };
@@ -29,24 +31,15 @@ function loop(timestamp) {
         // Debug
         count += 1;
         console.log(count);
-        draw();
+        updateSnake(snakeElements)
+        // loop breadcrumbs 
         oldKey = lastKeyPressed;
     }
     // Continue the loop
     animationFrameId = requestAnimationFrame(loop);
 }
 
-const draw = () => {
-    updateSnake(snakeElements);
-    updateFood(foodPosition);
-}
-
-const updateSnake = (elements) => {
-    updateSnakePosition(elements);
-
-    const oldSnake = document.querySelectorAll(".snake");
-    oldSnake.forEach((element) => element.remove());
-
+const drawSnake = (elements) => {
     elements.forEach(position => {
         let snake = document.createElement("div");
         snake.setAttribute("class", "snake");
@@ -54,6 +47,20 @@ const updateSnake = (elements) => {
         board.append(snake);
     });
 }
+
+const drawFood = (position) => {
+    let food = document.createElement("div");
+    food.setAttribute("id", "food");
+    food.style.gridArea = `${position.row}/${position.col}`
+    board.append(food);
+}
+const updateSnake = (elements) => {
+    updateSnakePosition(elements);
+    const oldSnake = document.querySelectorAll(".snake");
+    oldSnake.forEach((element) => element.remove());
+    drawSnake(elements)
+};
+
 
 const updateSnakePosition = (elements) => {
     //cancel backward movement
@@ -88,11 +95,7 @@ const updateFood = (position) => {
     if (oldFood) {
         oldFood.remove();
     }
-
-    let food = document.createElement("div");
-    food.setAttribute("id", "food");
-    food.style.gridArea = `${position.row}/${position.col}`
-    board.append(food);
+    drawFood(position);
 }
 
 //listening for player's input
