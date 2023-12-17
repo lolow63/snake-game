@@ -29,7 +29,6 @@ function loop(timestamp) {
         // Debug
         count += 1;
         console.log(count);
-        console.log('lastKeyPressed:', lastKeyPressed);
         draw();
         oldKey = lastKeyPressed;
     }
@@ -53,7 +52,6 @@ const updateSnake = (elements) => {
         snake.setAttribute("class", "snake");
         snake.style.gridArea = `${position.row}/${position.col}`
         board.append(snake);
-        console.log(snake);
     });
 }
 
@@ -105,19 +103,15 @@ document.addEventListener("keydown", (event) => {
 
     switch (event.key) {
         case "ArrowDown":
-            console.log("ArrowDown");
             lastKeyPressed = "ArrowDown"
             break;
         case "ArrowUp":
-            console.log("ArrowUp");
             lastKeyPressed = "ArrowUp"
             break;
         case "ArrowLeft":
-            console.log("ArrowLeft");
             lastKeyPressed = "ArrowLeft"
             break;
         case "ArrowRight":
-            console.log("ArrowRight");
             lastKeyPressed = "ArrowRight"
             break;
         case "Enter":
