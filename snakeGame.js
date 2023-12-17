@@ -1,14 +1,15 @@
 // Global variables
-let snakeElements = [{ row: 10, col: 3 }, { row: 10, col: 4 }, { row: 10, col: 5 }, { row: 10, col: 6 }];
+let snakeElements = [{ row: 10, col: 6 }, { row: 10, col: 5 }, { row: 10, col: 4 }, { row: 10, col: 3 }];
 let foodPosition = { row: 10, col: 15 };
 const board = document.getElementById("board");
 // loop variables
 let animationFrameId;
 let lastTime = 0;
-let intervalInMilliseconds = 1000;
+let intervalInMilliseconds = 150;
 let count = 0;
 //player's inputs
 let lastKeyPressed = 'ArrowRight';
+let oldKey = 'ArrowRight';
 
 // Start the game
 const Start = () => {
@@ -29,6 +30,7 @@ function loop(timestamp) {
         console.log(count);
         console.log('lastKeyPressed:', lastKeyPressed);
         draw();
+        oldKey = lastKeyPressed;
 
     }
     // Continue the loop
@@ -56,27 +58,29 @@ const updateSnake = (elements) => {
 }
 
 const updateSnakePosition = (elements) => {
-    let head;
+    //cancel backward movement
+    if (oldKey === "ArrowDown" && lastKeyPressed === "ArrowUp") lastKeyPressed = oldKey;
+    else if (oldKey === "ArrowUp" && lastKeyPressed === "ArrowDown") lastKeyPressed = oldKey;
+    else if (oldKey === "ArrowLeft" && lastKeyPressed === "ArrowRight") lastKeyPressed = oldKey;
+    else if (oldKey === "ArrowRight" && lastKeyPressed === "ArrowLeft") lastKeyPressed = oldKey;
+
+    let head = elements[0];
     switch (lastKeyPressed) {
         case "ArrowDown":
-            head = elements[elements.length - 1]
-            elements.push({ row: head.row + 1, col: head.col })
-            elements.shift();
+            elements.unshift({ row: head.row + 1, col: head.col })
+            elements.pop();
             break;
         case "ArrowUp":
-            head = elements[0]
             elements.unshift({ row: head.row - 1, col: head.col })
             elements.pop();
             break;
         case "ArrowLeft":
-            head = elements[0]
             elements.unshift({ row: head.row, col: head.col - 1 })
             elements.pop();
             break;
         case "ArrowRight":
-            head = elements[elements.length - 1]
-            elements.push({ row: head.row, col: head.col + 1 })
-            elements.shift();
+            elements.unshift({ row: head.row, col: head.col + 1 })
+            elements.pop();
             break;
     }
 }
