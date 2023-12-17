@@ -33,7 +33,9 @@ const loop = (timestamp) => {
         console.log(count);
         updateSnake(snakeElements);
         checkForCollision(snakeElements, foodPosition);
-        if (isEaten) updateFood(foodPosition);
+        if (isEaten) {
+            updateFood(foodPosition);
+        };
         // breadcrumbs 
         oldKey = lastKeyPressed;
     };
@@ -86,19 +88,19 @@ const updateSnakePosition = (elements) => {
     switch (lastKeyPressed) {
         case "ArrowDown":
             elements.unshift({ row: head.row + 1, col: head.col });
-            elements.pop();
+            if (!isEaten) elements.pop();
             break;
         case "ArrowUp":
             elements.unshift({ row: head.row - 1, col: head.col });
-            elements.pop();
+            if (!isEaten) elements.pop();
             break;
         case "ArrowLeft":
             elements.unshift({ row: head.row, col: head.col - 1 });
-            elements.pop();
+            if (!isEaten) elements.pop();
             break;
         case "ArrowRight":
             elements.unshift({ row: head.row, col: head.col + 1 });
-            elements.pop();
+            if (!isEaten) elements.pop();
             break;
     };
 };
@@ -106,6 +108,7 @@ const updateFoodPosition = (position) => {
     position.row = Math.floor(Math.random() * 20) + 1;
     position.col = Math.floor(Math.random() * 20) + 1;
 };
+
 // listening for player's input
 document.addEventListener("keydown", (event) => {
     if (event.defaultPrevented) {
