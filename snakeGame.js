@@ -7,6 +7,7 @@ let animationFrameId;
 let lastTime = 0;
 let intervalInMilliseconds = 150;
 let count = 0;
+let isPaused = false;
 //player's inputs
 let lastKeyPressed = 'ArrowRight';
 let oldKey = 'ArrowRight';
@@ -31,7 +32,6 @@ function loop(timestamp) {
         console.log('lastKeyPressed:', lastKeyPressed);
         draw();
         oldKey = lastKeyPressed;
-
     }
     // Continue the loop
     animationFrameId = requestAnimationFrame(loop);
@@ -127,7 +127,9 @@ document.addEventListener("keydown", (event) => {
             // Do something for "space" key press.
             break;
         case "Escape":
-            cancelAnimationFrame(animationFrameId);
+            isPaused = !isPaused;
+            if (isPaused) cancelAnimationFrame(animationFrameId);
+            else if (!isPaused) requestAnimationFrame(loop);
             break;
         default:
             return; // Quit when this doesn't handle the key event.
