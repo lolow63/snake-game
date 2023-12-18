@@ -3,7 +3,7 @@ let snakeElements = [{ row: 10, col: 6 }, { row: 10, col: 5 }, { row: 10, col: 4
 let foodPosition = { row: 10, col: 15 };
 let isEaten = false;
 let isWallHit = false;
-let isCellFree = true;
+let isCellTaken = false;
 const board = document.getElementById("board");
 // loop variables
 let animationFrameId;
@@ -32,11 +32,12 @@ const loop = (timestamp) => {
         // Debug
         count += 1;
         console.log(count);
+        checkForCollisions(snakeElements, foodPosition);
         updateSnake(snakeElements);
-        checkForCollision(snakeElements, foodPosition);
-        if (isEaten) {
+        while (isCellTaken) {
             updateFood(foodPosition);
-        };
+            checkForCollisions(snakeElements, foodPosition);
+        }
         if (isWallHit) return end();
         // breadcrumbs 
         oldKey = lastKeyPressed;
@@ -71,20 +72,17 @@ const updateSnake = (elements) => {
     oldSnake.forEach((element) => element.remove());
     drawSnake(elements);
 };
-const checkForCollision = (player, target) => {
-    player[0].row === target.row && player[0].col === target.col
-        ? isEaten = true
-        : isEaten = false;
+const checkForCollisions = (player, target) => {
+    const checkForFoodEaten = (player, target) => player[0].row === target.row && player[0].col === target.col;
+    checkForFoodEaten(player, target) ? isEaten = true : isEaten = false;
 
-    const edge = (element) => element.row > 20 || element.col > 20 || element.row < 0 || element.col < 0;
-    player.some(edge) ? isWallHit = true : isWallHit = false;
+    const checkForWallReached = (element) => element.row > 20 || element.col > 20 || element.row < 0 || element.col < 0;
+    player.some(checkForWallReached) ? isWallHit = true : isWallHit = false;
 
-    player.forEach((element) => {
-        if (element.row === target.row && element.col === target.col) {
-            isCellFree = false;
-        } else isCellFree;
-    })
+    const checkForMatchingCell = (element) => element.row === target.row && element.col === target.col;
+    player.some(checkForMatchingCell) ? isCellTaken = true : isCellTaken = false;
 };
+
 const updateFood = (position) => {
     updateFoodPosition(position);
     const oldFood = document.getElementById("food");
