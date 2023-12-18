@@ -1,6 +1,7 @@
 // Global variables
 let snakeElements = [{ row: 10, col: 6 }, { row: 10, col: 5 }, { row: 10, col: 4 }, { row: 10, col: 3 }];
 let foodPosition = { row: 10, col: 15 };
+let isBodyBitten = false;
 let isEaten = false;
 let isWallHit = false;
 let isCellTaken = false;
@@ -39,6 +40,7 @@ const loop = (timestamp) => {
             checkForCollisions(snakeElements, foodPosition);
         }
         if (isWallHit) return end();
+        if (isBodyBitten) return end();
         // breadcrumbs 
         oldKey = lastKeyPressed;
     };
@@ -73,7 +75,7 @@ const updateSnake = (elements) => {
     drawSnake(elements);
 };
 const checkForCollisions = (player, target) => {
-    const checkForFoodEaten = (player, target) => player[0].row === target.row && player[0].col === target.col;
+    checkForBodyBitten(player) >= 2 ? isBodyBitten = true : isBodyBitten = false;
     checkForFoodEaten(player, target) ? isEaten = true : isEaten = false;
 
     const checkForWallReached = (element) => element.row > 20 || element.col > 20 || element.row < 0 || element.col < 0;
@@ -121,6 +123,15 @@ const updateFoodPosition = (position) => {
     position.row = Math.floor(Math.random() * 20) + 1;
     position.col = Math.floor(Math.random() * 20) + 1;
 };
+const checkForBodyBitten = (player) => {
+    let duplicate = 0;
+    const checkForDuplicate = (element) => {
+        if (player[0].row === element.row && player[0].col === element.col) duplicate += 1;
+    };
+    player.forEach(checkForDuplicate);
+    return duplicate;
+};
+const checkForFoodEaten = (player, target) => player[0].row === target.row && player[0].col === target.col;
 
 // listening for player's input
 
