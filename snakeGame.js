@@ -34,16 +34,22 @@ const loop = (timestamp) => {
         console.log(count);
         updateSnake(snakeElements);
         checkForCollision(snakeElements, foodPosition);
-        if (isEaten || !isCellFree) {
+        if (isEaten) {
             updateFood(foodPosition);
         };
+        if (isWallHit) return end();
         // breadcrumbs 
         oldKey = lastKeyPressed;
-        isCellFree = true;
     };
     // Continue the loop
     animationFrameId = requestAnimationFrame(loop);
 };
+// end the game
+const end = () => {
+    cancelAnimationFrame(animationFrameId);
+    document.removeEventListener('keydown', onPlay);
+    alert("game over!")
+}
 const drawSnake = (elements) => {
     elements.forEach(position => {
         let snake = document.createElement("div");
@@ -60,6 +66,7 @@ const drawFood = (position) => {
 };
 const updateSnake = (elements) => {
     updateSnakePosition(elements);
+    updateSnakeSize(elements);
     const oldSnake = document.querySelectorAll(".snake");
     oldSnake.forEach((element) => element.remove());
     drawSnake(elements);
@@ -69,13 +76,13 @@ const checkForCollision = (player, target) => {
         ? isEaten = true
         : isEaten = false;
 
-    const edge = (element) => element.row === 20 || element.col === 20;
+    const edge = (element) => element.row > 20 || element.col > 20 || element.row < 0 || element.col < 0;
     player.some(edge) ? isWallHit = true : isWallHit = false;
 
     player.forEach((element) => {
         if (element.row === target.row && element.col === target.col) {
             isCellFree = false;
-        }
+        } else isCellFree;
     })
 };
 const updateFood = (position) => {
@@ -97,33 +104,32 @@ const updateSnakePosition = (elements) => {
     switch (lastKeyPressed) {
         case "ArrowDown":
             elements.unshift({ row: head.row + 1, col: head.col });
-            if (!isEaten) elements.pop();
             break;
         case "ArrowUp":
             elements.unshift({ row: head.row - 1, col: head.col });
-            if (!isEaten) elements.pop();
             break;
         case "ArrowLeft":
             elements.unshift({ row: head.row, col: head.col - 1 });
-            if (!isEaten) elements.pop();
             break;
         case "ArrowRight":
             elements.unshift({ row: head.row, col: head.col + 1 });
-            if (!isEaten) elements.pop();
             break;
     };
 };
+const updateSnakeSize = (elements) => {
+    if (!isEaten) elements.pop();
+}
 const updateFoodPosition = (position) => {
     position.row = Math.floor(Math.random() * 20) + 1;
     position.col = Math.floor(Math.random() * 20) + 1;
 };
 
 // listening for player's input
-document.addEventListener("keydown", (event) => {
+
+const onPlay = (event) => {
     if (event.defaultPrevented) {
         return; // Do nothing if the event was already processed
     };
-
     switch (event.key) {
         case "ArrowDown":
             lastKeyPressed = "ArrowDown";
@@ -153,6 +159,5 @@ document.addEventListener("keydown", (event) => {
     };
     // Cancel the default action to avoid it being handled twice
     event.preventDefault();
-},
-    true,
-);
+};
+document.addEventListener("keydown", onPlay, true)
