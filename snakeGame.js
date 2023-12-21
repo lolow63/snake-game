@@ -5,6 +5,7 @@ let isBodyBitten = false;
 let isEaten = false;
 let isWallHit = false;
 let isCellTaken = false;
+let isSnakeMaxedOut = false;
 let isGameStarted = false;
 let isGamePaused = false;
 
@@ -14,7 +15,7 @@ const splashScreenElement = document.getElementById("splashScreen");
 // gameLoop variables initialisation
 let animationFrameId;
 let lastTimestampChecked = 0;
-let snakeSpeed = 150;
+let frameIntervalInMilliseconds = 150;
 
 //player's inputs initialisation
 let lastKeyPressed = 'ArrowRight';
@@ -31,15 +32,21 @@ const startGame = () => {
 
 // Update the game
 const gameLoop = (timestamp) => {
-    if (timestamp - lastTimestampChecked >= snakeSpeed) {
+    if (timestamp - lastTimestampChecked >= frameIntervalInMilliseconds) {
         detectCollisions(snakeSegments, foodPosition);
         updateSnake(snakeSegments);
-        while (isCellTaken) {
+        //handle edge case when all cells are taken to prevent infinite loop
+        if (isSnakeMaxedOut) alert("You are a winner!!!")
+        let infinite = 1;
+        while (isCellTaken && !isSnakeMaxedOut && infinite <= 100) {
             updateFood(foodPosition);
             detectCollisions(snakeSegments, foodPosition);
+            console.log('infinite:', infinite)
+            infinite += 1;
         }
         if (isWallHit) return endGame();
         if (isBodyBitten) return endGame();
+        // TODO handle score
         // breadcrumbs 
         lastTimestampChecked = timestamp;
         oldKey = lastKeyPressed;
@@ -52,6 +59,8 @@ const gameLoop = (timestamp) => {
 const endGame = () => {
     cancelAnimationFrame(animationFrameId);
     document.removeEventListener('keydown', onPlay);
+    // TODO check for high score, update and save current high score 
+    // TODO handle game over
     alert("game over!")
 };
 
@@ -75,6 +84,7 @@ const updateSnake = (elements) => {
     oldSnake.forEach((element) => element.remove());
     moveSnake(elements);
     shrinkSnakeIfNotEaten(elements);
+    checkForMaximumSnakeSize(elements);
     renderSnakeOnBoard(elements);
 };
 const updateFood = (position) => {
@@ -119,6 +129,11 @@ const moveSnake = (elements) => {
 };
 const shrinkSnakeIfNotEaten = (elements) => {
     if (!isEaten) elements.pop();
+}
+
+const checkForMaximumSnakeSize = (elements) => {
+    if (elements.length >= 399) isSnakeMaxedOut = true;
+    else isSnakeMaxedOut = false;
 }
 const generateRandomFoodPosition = (position) => {
     position.row = Math.floor(Math.random() * 20) + 1;
